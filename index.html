@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+	<body style="background-color: #f7fbf3;">
+    <title>越南语听力练习</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin-top: 20px; 
+        }
+        #passwordContainer {
+            margin-top: 50px;
+        }
+        #passwordInput {
+            padding: 10px;
+            font-size: 20px;
+            border: 2px solid #734A2E;
+            border-radius: 5px;
+        }
+        #submitPassword {
+            padding: 10px 20px;
+            font-size: 20px;
+            border: 4px solid #89ACB7;
+            background: #68838B;
+            color: #E6E6FA;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        #gameContainer {
+            display: none; /* Ẩn game cho đến khi nhập đúng mật mã */
+        }
+        #infoBox { 
+            width: 80%; 
+            height: 100px; 
+            margin: 0 auto; 
+            border: 1px solid #ccc; 
+            background: #68838B; 
+            color: #D2B48C; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 80px; 
+            font-weight: bold;
+        }
+        #contactBox { 
+            width: 75%; 
+            height: 40px; 
+            margin: 0px auto; 
+            border: 1px solid #ccc; 
+            background: #68838B; 
+            color: #D2B48C; 
+            display: flex; 
+            align-items: center; 
+            justify-content: left; 
+            padding-left: 20px;
+            font-size: 20px; 
+            font-weight: bold;
+        }
+        #shortcutBox { 
+            width: 75%; 
+            height: 30px; 
+            margin: 0px auto; 
+            border: 1px solid #ccc; 
+            background: #68838B; 
+            color: #D2B48C; 
+            display: flex; 
+            align-items: center; 
+            justify-content: left; 
+            padding-left: 20px;
+            font-size: 13px; 
+            font-weight: bold;
+        }
+        #controls { 
+            margin: 20px 0; 
+        }
+        button { 
+            padding: 10px 20px; 
+            margin: 0 5px; 
+            cursor: pointer; 
+            border: 3px solid #89ACB7; 
+            background: #68838B; 
+            color: #E6E6FA; 
+            font-size: 20px; 
+            border-radius: 5px; 
+            font-weight: bold; 
+        }
+        #sentenceNumber { 
+            width: 40px; 
+            padding: 10px; 
+            text-align: center; 
+            border: 3px solid #68838B; 
+            background: #FFAD5B; 
+            color: #000; 
+            border-radius: 10px; 
+            font-size: 30px; 
+            -moz-appearance: textfield; 
+        }
+        #sentenceNumber::-webkit-inner-spin-button, 
+        #sentenceNumber::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        #sentenceNumber:disabled { 
+            background: #eee; 
+        }
+        .disabled { 
+            cursor: not-allowed; 
+            pointer-events: none; 
+        }
+        .active-mode { 
+            border: 4px solid orange; 
+        }
+        #indicator { 
+            width: 800px; 
+            height: 90px; 
+            margin: 10px auto; 
+            border: 5px solid #734A2E; 
+            background: #ffffe0; 
+            border-radius: 30px; 
+			display: flex; /* Sử dụng flex để căn chỉnh hai dòng */
+            flex-direction: column; /* Xếp theo cột */
+            justify-content: center; /* Căn giữa theo chiều dọc */
+            align-items: center; /* Căn giữa theo chiều ngang */
+        }
+        #answerInput { 
+            width: 70%; 
+            padding: 20px; 
+            margin: 10px 0; 
+            border: 3px solid #734A2E; 
+            background: #E6EDD9; 
+            color: #000; 
+            font-size: 30px;
+        }
+        #score { 
+            display: none; 
+            margin-left: 10px; 
+            color: #FF6820; 
+            font-size: 30px; 
+        }
+        #wrongSentences { 
+            display: none; 
+            width: 70%; 
+            margin: 10px auto; 
+            padding: 10px; 
+            border: 2px solid #CE6D5E; 
+            background: #FFF0F0; 
+            color: #CE6D5E; 
+            font-size: 20px; 
+            text-align: left; 
+            border-radius: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="passwordContainer">
+        <input type="text" id="passwordInput" placeholder="输入密码">
+        <button id="submitPassword">提交</button>
+    </div>
+    <div id="gameContainer">
+        <div id="infoBox">习得越南语 - 听力练习</div>
+        <div id="contactBox">讲师-阮玉煌 | Weixin：XiDeYueNanYu</div>
+        <div id="shortcutBox">快键: Ctrl+F (再听一遍) | Ctrl+8 (上一题) | Ctrl+9 (下一题)</div>
+        <div id="controls">
+            <button id="autoContinueBtn">自动继续</button>
+            <button id="showHideBtn">显示-隐藏</button>
+            <button id="prevBtn">◀</button>
+            <input type="text" id="sentenceNumber" inputmode="numeric" pattern="[0-9]*">
+            <button id="nextBtn">▶</button>
+            <button id="replayBtn">再听一遍</button>
+            <button id="freeModeBtn" class="active-mode">自由模式</button>
+            <button id="testModeBtn">作业模式</button>
+            <span id="score">0/0</span>
+        </div>
+        <div id="indicator"></div>
+        <input type="text" id="answerInput" placeholder="输入所听到的内容">
+        <div id="wrongSentences"></div>
+    </div>
+    <audio id="mainAudio" src="Q2B1T2.mp3"></audio>
+    <audio id="correctAudio" src="Dung.mp3"></audio>
+    <audio id="wrongAudio" src="Sai.mp3"></audio>
+
+   <script>
+    const audio = document.getElementById('mainAudio');
+    const correctAudio = document.getElementById('correctAudio');
+    const wrongAudio = document.getElementById('wrongAudio');
+    const answerInput = document.getElementById('answerInput');
+    const indicator = document.getElementById('indicator');
+    const sentenceNumber = document.getElementById('sentenceNumber');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const replayBtn = document.getElementById('replayBtn');
+    const freeModeBtn = document.getElementById('freeModeBtn');
+    const testModeBtn = document.getElementById('testModeBtn');
+    const autoContinueBtn = document.getElementById('autoContinueBtn');
+    const showHideBtn = document.getElementById('showHideBtn');
+    const scoreDisplay = document.getElementById('score');
+    const wrongSentencesDisplay = document.getElementById('wrongSentences');
+    const passwordContainer = document.getElementById('passwordContainer');
+    const gameContainer = document.getElementById('gameContainer');
+    const passwordInput = document.getElementById('passwordInput');
+    const submitPassword = document.getElementById('submitPassword');
+
+    const buttons = [prevBtn, nextBtn, replayBtn, freeModeBtn, testModeBtn, autoContinueBtn, showHideBtn];
+
+    const correctPassword = ""; // Mật mã để vào game (có thể thay đổi)
+    const nextPassword = ""; // Mật mã cho thử thách tiếp theo
+
+    const sentences = [
+    { start: 1.017819, end: 3.097709, text: "Cháu nói được tiếng Việt không?", text2: "你会说越南语吗？" },
+    { start: 4.270413, end: 5.841393, text: "Cháu nói được một chút ạ.", text2: "我会说一点点。" },
+    { start: 7.390248, end: 8.739964, text: "Anh uống được rượu không?", text2: "你能喝酒吗？" },
+    { start: 9.602897, end: 10.797727, text: "Tôi uống được.", text2: "我能喝。" },
+    { start: 12.036811, end: 14.360092, text: "Chị ấy có thể nói được 4 thứ tiếng.", text2: "她会说4种语言。" },
+    { start: 15.665555, end: 17.391422, text: "Mình không ăn được hải sản.", text2: "我不能吃海鲜。" },
+    { start: 18.497746, end: 20.334245, text: "Bác ấy không nói được tiếng Anh.", text2: "他不会说英语。" },
+    { start: 21.905226, end: 24.029369, text: "Tớ đang uống thuốc, không thể uống rượu.", text2: "我正在吃药，不能喝酒。" },
+    { start: 26.153512, end: 27.835125, text: "Bạn có thể nói tiếng Việt không?", text2: "你会说越南语吗？" },
+    { start: 29.229094, end: 30.977087, text: "Chị ấy nói được tiếng nước nào?", text2: "她会说什么外语？" },
+    { start: 32.747206, end: 34.650084, text: "Anh ấy có thể nói mấy thứ tiếng?", text2: "他会说几种语言？" },
+    { start: 36.066179, end: 37.969058, text: "Bà ấy nói được bao nhiêu thứ tiếng?", text2: "她会说多少种语言？" },
+    { start: 39.274521, end: 41.199525, text: "Bà ấy có thể nói ngoại ngữ gì?", text2: "她会说什么外语？" },
+    { start: 42.859012, end: 44.452119, text: "Lan nói được ngoại ngữ gì?", text2: "阿兰会说什么外语？" },
+    { start: 45.58057, end: 48.479141, text: "Cậu ấy hiểu tiếng Việt, nhưng không nói được tiếng Việt.", text2: "他听得(听)懂越南语，但不会说越南语。" },
+    { start: 49.961616, end: 52.351276, text: "Cậu có thể dịch giúp tớ câu này được không?", text2: "你能帮我翻译这句话吗？" },
+    { start: 54.276281, end: 57.086345, text: "Bác có thể chỉ giúp cháu đường đến Bảo tàng không ạ?", text2: "您能告诉我怎么去博物馆吗？" },
+    { start: 58.281176, end: 60.869975, text: "Bài tập này đơn giản, tớ làm được.", text2: "这个作业很简单，我能做。" },
+    { start: 62.153312, end: 64.166822, text: "Ngữ pháp tiếng Đức phức tạp lắm.", text2: "德语语法太复杂了。" },
+    { start: 65.737803, end: 68.813385, text: "Đường Hà Nội tắc lắm, không đi nhanh được.", text2: "河内的交通很堵，开不快。" },
+    { start: 70.340113, end: 72.37575, text: "Chiếc xe khách này đi chậm quá.", text2: "这辆大巴开得太慢了。" },
+    { start: 73.836099, end: 76.402772, text: "Sang đường ở Hà Nội không quá khó.", text2: "在河内过马路不是很难。" },
+    { start: 77.398464, end: 79.765998, text: "Địa chỉ nhà bác ấy dễ tìm lắm.", text2: "他家的地址很好找。" },
+    { start: 80.76169, end: 83.549628, text: "Kết quả học tập kỳ này của em trai tớ kém quá.", text2: "我弟弟这学期的成绩太差了。" },
+    { start: 84.855091, end: 88.041306, text: "Cậu ấy có thể nói được 10 thứ tiếng, giỏi thật !", text2: "他会说10种语言，真厉害！" }
+];
+
+    let currentIndex = 0;
+    let isFreeMode = true;
+    let correctCount = 0;
+    let isPlaying = false;
+    let correctSentences = new Set();
+    let wrongSentences = new Set();
+    let autoContinue = false;
+    let showAnswer = false;
+
+    // Kiểm tra mật khẩu
+    submitPassword.onclick = () => {
+        if (passwordInput.value.trim() === correctPassword) {
+            passwordContainer.style.display = 'none';
+            gameContainer.style.display = 'block';
+            init();
+        } else {
+            alert("密码错误");
+            passwordInput.value = '';
+        }
+    };
+
+    passwordInput.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+            submitPassword.onclick();
+        }
+    };
+
+    function init() {
+        updateSentenceDisplay();
+        answerInput.focus();
+    }
+
+    function updateSentenceDisplay() {
+        sentenceNumber.value = currentIndex + 1;
+        answerInput.value = '';
+        indicator.style.background = '#ffffe0';
+        if (isFreeMode && showAnswer) {
+            indicator.innerHTML = `
+                <div style="font-size: 25px; font-weight: bold; color: #163516;">${sentences[currentIndex].text}</div>
+                <div style="font-size: 23px; font-weight: bold; color: #68838B;">${sentences[currentIndex].text2}</div>
+            `;
+        } else {
+            indicator.innerHTML = '';
+            indicator.style.color = '';
+            indicator.style.fontSize = '';
+            indicator.style.fontWeight = '';
+            indicator.style.textAlign = '';
+            indicator.style.lineHeight = '';
+        }
+        if (!isFreeMode) updateWrongSentences();
+    }
+
+    function playCurrentSentence() {
+        if (isPlaying) audio.pause();
+        buttons.forEach(btn => btn.classList.add('disabled'));
+        sentenceNumber.disabled = true;
+        isPlaying = true;
+        audio.currentTime = sentences[currentIndex].start;
+        audio.play();
+
+        audio.ontimeupdate = () => {
+            if (audio.currentTime >= sentences[currentIndex].end) {
+                audio.pause();
+                audio.ontimeupdate = null;
+                buttons.forEach(btn => btn.classList.remove('disabled'));
+                sentenceNumber.disabled = false;
+                isPlaying = false;
+            }
+        };
+    }
+
+    function moveSentence(direction) {
+        currentIndex = (currentIndex + direction + sentences.length) % sentences.length;
+        updateSentenceDisplay();
+        playCurrentSentence();
+    }
+
+    // Hàm xóa các dấu câu cụ thể
+    function removePunctuation(text) {
+        return text.replace(/[,.!?]/g, '');
+    }
+
+    function checkAnswer() {
+        // Chuyển về chữ thường, xóa dấu câu, rồi mới xóa dấu cách thừa
+        const userAnswer = removePunctuation(answerInput.value.toLowerCase()).trim();
+        const correctAnswer = removePunctuation(sentences[currentIndex].text.toLowerCase()).trim();
+        
+        if (userAnswer === correctAnswer) {
+            indicator.style.background = '#B7D7AA';
+            correctAudio.play();
+            if (!isFreeMode && !correctSentences.has(currentIndex)) {
+                correctCount++;
+                correctSentences.add(currentIndex);
+                wrongSentences.delete(currentIndex);
+                correctAudio.onended = () => setTimeout(() => moveSentence(1), 200);
+            } else if (isFreeMode && autoContinue) {
+                correctAudio.onended = () => setTimeout(() => moveSentence(1), 200);
+            } else {
+                correctAudio.onended = null;
+            }
+        } else {
+            indicator.style.background = '#CE6D5E';
+            wrongAudio.play();
+            if (!isFreeMode && !correctSentences.has(currentIndex)) {
+                wrongSentences.add(currentIndex);
+            }
+        }
+        if (!isFreeMode) updateScore();
+    }
+
+    function updateScore() {
+        scoreDisplay.textContent = `${correctCount}/${sentences.length}`;
+        updateWrongSentences();
+        if (correctCount === sentences.length) {
+            setTimeout(() => {
+                alert(`下一项练习密码: ${nextPassword}`);
+            }, 100);
+        }
+    }
+
+    function updateWrongSentences() {
+        if (isFreeMode || wrongSentences.size === 0) {
+            wrongSentencesDisplay.style.display = 'none';
+        } else {
+            const wrongList = Array.from(wrongSentences).map(index => index + 1).join('/ ');
+            wrongSentencesDisplay.textContent = `解决问题：${wrongList}`;
+            wrongSentencesDisplay.style.display = 'block';
+        }
+    }
+
+    prevBtn.onclick = () => {
+        moveSentence(-1);
+    };
+
+    nextBtn.onclick = () => {
+        moveSentence(1);
+    };
+
+    replayBtn.onclick = () => {
+        playCurrentSentence();
+    };
+
+    freeModeBtn.onclick = () => {
+        isFreeMode = true;
+        freeModeBtn.classList.add('active-mode');
+        testModeBtn.classList.remove('active-mode');
+        scoreDisplay.style.display = 'none';
+        wrongSentencesDisplay.style.display = 'none';
+        autoContinueBtn.style.display = 'inline';
+        showHideBtn.style.display = 'inline';
+        updateSentenceDisplay();
+    };
+
+    testModeBtn.onclick = () => {
+        isFreeMode = false;
+        testModeBtn.classList.add('active-mode');
+        freeModeBtn.classList.remove('active-mode');
+        scoreDisplay.style.display = 'inline';
+        autoContinueBtn.style.display = 'none';
+        showHideBtn.style.display = 'none';
+        currentIndex = 0;
+        correctCount = 0;
+        correctSentences.clear();
+        wrongSentences.clear();
+        for (let i = 0; i < sentences.length; i++) {
+            wrongSentences.add(i);
+        }
+        updateSentenceDisplay();
+        playCurrentSentence();
+        updateScore();
+    };
+
+    autoContinueBtn.onclick = () => {
+        autoContinue = !autoContinue;
+        autoContinueBtn.classList.toggle('active-mode');
+        if (!autoContinue) {
+            correctAudio.onended = null;
+        }
+    };
+
+    showHideBtn.onclick = () => {
+        showAnswer = !showAnswer;
+        showHideBtn.classList.toggle('active-mode');
+        updateSentenceDisplay();
+    };
+
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && !isPlaying) {
+            if (e.key === 'f') {
+                e.preventDefault();
+                playCurrentSentence();
+            } else if (e.key === '8') {
+                e.preventDefault();
+                moveSentence(-1);
+            } else if (e.key === '9') {
+                e.preventDefault();
+                moveSentence(1);
+            }
+        }
+    });
+
+    sentenceNumber.onchange = () => {
+        if (!isPlaying) {
+            const num = parseInt(sentenceNumber.value) - 1;
+            if (!isNaN(num) && num >= 0 && num < sentences.length) {
+                currentIndex = num;
+                updateSentenceDisplay();
+                playCurrentSentence();
+            } else {
+                alert(`输入范围： 1 到 ${sentences.length}`);
+                updateSentenceDisplay();
+            }
+        }
+    };
+
+    sentenceNumber.onkeydown = (e) => {
+        if (!isPlaying) {
+            if (e.key === 'ArrowLeft') moveSentence(-1);
+            if (e.key === 'ArrowRight') moveSentence(1);
+        }
+    };
+
+    answerInput.onkeypress = (e) => {
+        if (e.key === 'Enter') checkAnswer();
+    };
+</script>
+</body>
+</html>
