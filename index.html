@@ -5,154 +5,196 @@
 	<body style="background-color: #f7fbf3;">
     <title>越南语听力练习</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            margin-top: 20px; 
+    body { 
+        font-family: Arial, sans-serif; 
+        text-align: center; 
+        margin: 0; /* Loại bỏ margin mặc định */
+        padding: 10px; /* Thêm padding để tránh sát mép */
+    }
+    #passwordContainer {
+        margin-top: 10vh; /* Dùng vh để căn giữa theo chiều dọc */
+    }
+    #passwordInput {
+        padding: 8px;
+        font-size: clamp(16px, 4vw, 20px); /* Font-size linh hoạt */
+        border: 2px solid #734A2E;
+        border-radius: 5px;
+        width: 70%; /* Chiếm 70% chiều rộng màn hình */
+        max-width: 300px; /* Giới hạn tối đa */
+    }
+    #submitPassword {
+        padding: 8px 16px;
+        font-size: clamp(16px, 4vw, 20px);
+        border: 4px solid #89ACB7;
+        background: #68838B;
+        color: #E6E6FA;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: 10px;
+    }
+    #gameContainer {
+        display: none; /* Ẩn game cho đến khi nhập đúng mật mã */
+    }
+    #infoBox { 
+        width: 90%; /* Dùng % để linh hoạt */
+        max-width: 800px; /* Giới hạn tối đa */
+        height: auto; /* Để chiều cao tự điều chỉnh */
+        min-height: 60px; /* Đảm bảo không quá nhỏ */
+        margin: 10px auto; 
+        border: 1px solid #ccc; 
+        background: #68838B; 
+        color: #D2B48C; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-size: clamp(20px, 6vw, 80px); /* Font-size linh hoạt */
+        font-weight: bold;
+        padding: 10px;
+    }
+    #contactBox { 
+        width: 90%;
+        max-width: 750px;
+        height: auto;
+        min-height: 40px;
+        margin: 5px auto;
+        border: 1px solid #ccc; 
+        background: #68838B; 
+        color: #D2B48C; 
+        display: flex; 
+        align-items: center; 
+        justify-content: left; 
+        padding-left: 10px;
+        font-size: clamp(14px, 3vw, 20px);
+        font-weight: bold;
+    }
+    #shortcutBox { 
+        width: 90%;
+        max-width: 750px;
+        height: auto;
+        min-height: 30px;
+        margin: 5px auto;
+        border: 1px solid #ccc; 
+        background: #68838B; 
+        color: #D2B48C; 
+        display: flex; 
+        align-items: center; 
+        justify-content: left; 
+        padding-left: 10px;
+        font-size: clamp(10px, 2.5vw, 13px);
+        font-weight: bold;
+    }
+    #controls { 
+        margin: 15px 0; 
+        display: flex; /* Dùng flex để các nút xếp hàng ngang */
+        flex-wrap: wrap; /* Cho phép xuống dòng nếu không đủ chỗ */
+        justify-content: center;
+        gap: 5px; /* Khoảng cách giữa các nút */
+    }
+    button { 
+        padding: 8px 16px;
+        margin: 5px; 
+        cursor: pointer; 
+        border: 3px solid #89ACB7; 
+        background: #68838B; 
+        color: #E6E6FA; 
+        font-size: clamp(14px, 3.5vw, 20px);
+        border-radius: 5px; 
+        font-weight: bold;
+    }
+    #sentenceNumber { 
+        width: 40px; 
+        padding: 8px; 
+        text-align: center; 
+        border: 3px solid #68838B; 
+        background: #FFAD5B; 
+        color: #000; 
+        border-radius: 10px; 
+        font-size: clamp(16px, 4vw, 30px);
+        -moz-appearance: textfield; 
+    }
+    #sentenceNumber::-webkit-inner-spin-button, 
+    #sentenceNumber::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+    #sentenceNumber:disabled { 
+        background: #eee; 
+    }
+    .disabled { 
+        cursor: not-allowed; 
+        pointer-events: none; 
+    }
+    .active-mode { 
+        border: 4px solid orange; 
+    }
+    #indicator { 
+        width: 90%;
+        max-width: 800px;
+        height: auto;
+        min-height: 60px;
+        margin: 10px auto; 
+        border: 5px solid #734A2E; 
+        background: #ffffe0; 
+        border-radius: 20px; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+    #answerInput { 
+        width: 90%;
+        max-width: 700px;
+        padding: 15px; 
+        margin: 10px 0; 
+        border: 3px solid #734A2E; 
+        background: #E6EDD9; 
+        color: #000; 
+        font-size: clamp(16px, 4vw, 30px);
+    }
+    #score { 
+        display: none; 
+        margin-left: 10px; 
+        color: #FF6820; 
+        font-size: clamp(16px, 4vw, 30px);
+    }
+    #wrongSentences { 
+        display: none; 
+        width: 90%;
+        max-width: 700px;
+        margin: 10px auto; 
+        padding: 10px; 
+        border: 2px solid #CE6D5E; 
+        background: #FFF0F0; 
+        color: #CE6D5E; 
+        font-size: clamp(14px, 3.5vw, 20px);
+        text-align: left; 
+        border-radius: 5px; 
+    }
+
+    /* Media Queries cho các kích thước màn hình nhỏ */
+    @media (max-width: 600px) {
+        #infoBox {
+            font-size: clamp(18px, 5vw, 40px); /* Giảm font-size trên điện thoại */
         }
-        #passwordContainer {
-            margin-top: 50px;
+        #contactBox, #shortcutBox {
+            font-size: clamp(12px, 2.5vw, 16px);
         }
-        #passwordInput {
+        button, #submitPassword {
+            padding: 6px 12px; /* Giảm kích thước nút */
+        }
+        #sentenceNumber {
+            width: 35px; /* Giảm chiều rộng */
+        }
+        #indicator {
+            border-width: 3px; /* Giảm độ dày viền */
+            border-radius: 15px;
+        }
+        #answerInput {
             padding: 10px;
-            font-size: 20px;
-            border: 2px solid #734A2E;
-            border-radius: 5px;
         }
-        #submitPassword {
-            padding: 10px 20px;
-            font-size: 20px;
-            border: 4px solid #89ACB7;
-            background: #68838B;
-            color: #E6E6FA;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-left: 10px;
-        }
-        #gameContainer {
-            display: none; /* Ẩn game cho đến khi nhập đúng mật mã */
-        }
-        #infoBox { 
-            width: 80%; 
-            height: 100px; 
-            margin: 0 auto; 
-            border: 1px solid #ccc; 
-            background: #68838B; 
-            color: #D2B48C; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 80px; 
-            font-weight: bold;
-        }
-        #contactBox { 
-            width: 75%; 
-            height: 40px; 
-            margin: 0px auto; 
-            border: 1px solid #ccc; 
-            background: #68838B; 
-            color: #D2B48C; 
-            display: flex; 
-            align-items: center; 
-            justify-content: left; 
-            padding-left: 20px;
-            font-size: 20px; 
-            font-weight: bold;
-        }
-        #shortcutBox { 
-            width: 75%; 
-            height: 30px; 
-            margin: 0px auto; 
-            border: 1px solid #ccc; 
-            background: #68838B; 
-            color: #D2B48C; 
-            display: flex; 
-            align-items: center; 
-            justify-content: left; 
-            padding-left: 20px;
-            font-size: 13px; 
-            font-weight: bold;
-        }
-        #controls { 
-            margin: 20px 0; 
-        }
-        button { 
-            padding: 10px 20px; 
-            margin: 0 5px; 
-            cursor: pointer; 
-            border: 3px solid #89ACB7; 
-            background: #68838B; 
-            color: #E6E6FA; 
-            font-size: 20px; 
-            border-radius: 5px; 
-            font-weight: bold; 
-        }
-        #sentenceNumber { 
-            width: 40px; 
-            padding: 10px; 
-            text-align: center; 
-            border: 3px solid #68838B; 
-            background: #FFAD5B; 
-            color: #000; 
-            border-radius: 10px; 
-            font-size: 30px; 
-            -moz-appearance: textfield; 
-        }
-        #sentenceNumber::-webkit-inner-spin-button, 
-        #sentenceNumber::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
-        #sentenceNumber:disabled { 
-            background: #eee; 
-        }
-        .disabled { 
-            cursor: not-allowed; 
-            pointer-events: none; 
-        }
-        .active-mode { 
-            border: 4px solid orange; 
-        }
-        #indicator { 
-            width: 800px; 
-            height: 90px; 
-            margin: 10px auto; 
-            border: 5px solid #734A2E; 
-            background: #ffffe0; 
-            border-radius: 30px; 
-			display: flex; /* Sử dụng flex để căn chỉnh hai dòng */
-            flex-direction: column; /* Xếp theo cột */
-            justify-content: center; /* Căn giữa theo chiều dọc */
-            align-items: center; /* Căn giữa theo chiều ngang */
-        }
-        #answerInput { 
-            width: 70%; 
-            padding: 20px; 
-            margin: 10px 0; 
-            border: 3px solid #734A2E; 
-            background: #E6EDD9; 
-            color: #000; 
-            font-size: 30px;
-        }
-        #score { 
-            display: none; 
-            margin-left: 10px; 
-            color: #FF6820; 
-            font-size: 30px; 
-        }
-        #wrongSentences { 
-            display: none; 
-            width: 70%; 
-            margin: 10px auto; 
-            padding: 10px; 
-            border: 2px solid #CE6D5E; 
-            background: #FFF0F0; 
-            color: #CE6D5E; 
-            font-size: 20px; 
-            text-align: left; 
-            border-radius: 5px; 
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div id="passwordContainer">
