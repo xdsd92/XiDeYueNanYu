@@ -225,6 +225,31 @@
     <audio id="wrongAudio" src="Sai.mp3"></audio>
 
    <script>
+	   async function fetchCompletedCount() {
+    try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbyN73yXupfJf7kFNJS4ToB2LdbA3CdXy318EpEQik3EMP_uPypRRZgY9jH1wgT-lHjO/exec');
+        const data = await response.json();
+        return data.completedCount;
+    } catch (error) {
+        console.error('Lỗi khi tải số đếm:', error);
+        return 0;
+    }
+}
+
+async function incrementCompletedCount() {
+    try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbyN73yXupfJf7kFNJS4ToB2LdbA3CdXy318EpEQik3EMP_uPypRRZgY9jH1wgT-lHjO/exec', {
+            method: 'POST'
+        });
+        const data = await response.json();
+        return data.completedCount;
+    } catch (error) {
+        console.error('Lỗi khi tăng số đếm:', error);
+        return 0;
+    }
+}
+
+
     const audio = document.getElementById('mainAudio');
     const correctAudio = document.getElementById('correctAudio');
     const wrongAudio = document.getElementById('wrongAudio');
@@ -388,15 +413,17 @@
         if (!isFreeMode) updateScore();
     }
 
-    function updateScore() {
-        scoreDisplay.textContent = `${correctCount}/${sentences.length}`;
-        updateWrongSentences();
-        if (correctCount === sentences.length) {
-            setTimeout(() => {
-                alert(`下一项练习密码: ${nextPassword}`);
-            }, 100);
-        }
+    // Sửa lại updateScore
+async function updateScore() {
+    scoreDisplay.textContent = `${correctCount}/${sentences.length}`;
+    updateWrongSentences();
+    if (correctCount === sentences.length) {
+        const completedCount = await incrementCompletedCount(); // Tăng và lấy số mới
+        setTimeout(() => {
+            alert(`您是第 ${completedCount} 个完成作业的人！`);
+        }, 100);
     }
+}
 
     function updateWrongSentences() {
         if (isFreeMode || wrongSentences.size === 0) {
